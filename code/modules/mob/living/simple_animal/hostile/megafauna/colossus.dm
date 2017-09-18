@@ -250,7 +250,7 @@ Difficulty: Very Hard
 	use_power = NO_POWER_USE
 	var/memory_saved = FALSE
 	var/list/stored_items = list()
-	var/list/blacklist = list()
+	var/static/list/blacklist = typecacheof(list(/obj/item/spellbook))
 
 /obj/machinery/smartfridge/black_box/update_icon()
 	return
@@ -258,8 +258,7 @@ Difficulty: Very Hard
 /obj/machinery/smartfridge/black_box/accept_check(obj/item/O)
 	if(!istype(O))
 		return FALSE
-	if(blacklist[O])
-		visible_message("<span class='boldwarning'>[src] ripples as it rejects [O]. The device will not accept items that have been removed from it.</span>")
+	if(is_type_in_typecache(O, blacklist))
 		return FALSE
 	return TRUE
 
@@ -310,8 +309,7 @@ Difficulty: Very Hard
 //in it's own proc to avoid issues with items that nolonger exist in the code base.
 //try catch doesn't always prevent byond runtimes from halting a proc,
 /obj/machinery/smartfridge/black_box/proc/create_item(item_type)
-	var/obj/O = new item_type(src)
-	blacklist[O] = TRUE
+	new item_type(src)
 
 /obj/machinery/smartfridge/black_box/Destroy(force = FALSE)
 	if(force)

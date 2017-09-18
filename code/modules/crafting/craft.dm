@@ -29,8 +29,7 @@
 							CAT_SALAD,
 							CAT_SANDWICH,
 							CAT_SOUP,
-							CAT_SPAGHETTI),
-                        CAT_CLOTHING) //Clothing subcategories
+							CAT_SPAGHETTI))
 
 	var/datum/action/innate/crafting/button
 	var/display_craftable_only = FALSE

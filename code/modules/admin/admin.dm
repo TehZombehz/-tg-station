@@ -513,7 +513,7 @@
 	set category = "Server"
 	set desc="Toggle dis bitch"
 	set name="Toggle Dead OOC"
-	toggle_dooc()
+	GLOB.dooc_allowed = !( GLOB.dooc_allowed )
 
 	log_admin("[key_name(usr)] toggled OOC.")
 	message_admins("[key_name_admin(usr)] toggled Dead OOC.")

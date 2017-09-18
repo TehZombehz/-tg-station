@@ -1,5 +1,4 @@
 #define DEFAULT_DOOMSDAY_TIMER 4500
-#define DOOMSDAY_ANNOUNCE_INTERVAL 600
 
 GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
 		/obj/machinery/field/containment,
@@ -325,11 +324,12 @@ GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
 	var/timing = FALSE
 	var/obj/effect/countdown/doomsday/countdown
 	var/detonation_timer
-	var/next_announce
+	var/list/milestones
 
 /obj/machinery/doomsday_device/Initialize()
 	. = ..()
 	countdown = new(src)
+	milestones = list()
 
 /obj/machinery/doomsday_device/Destroy()
 	QDEL_NULL(countdown)
@@ -344,7 +344,6 @@ GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
 
 /obj/machinery/doomsday_device/proc/start()
 	detonation_timer = world.time + DEFAULT_DOOMSDAY_TIMER
-	next_announce = world.time + DOOMSDAY_ANNOUNCE_INTERVAL
 	timing = TRUE
 	countdown.start()
 	START_PROCESSING(SSfastprocess, src)
@@ -368,9 +367,11 @@ GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
 	if(!sec_left)
 		timing = FALSE
 		detonate(T.z)
-	else if(world.time >= next_announce)
-		minor_announce("[sec_left] SECONDS UNTIL DOOMSDAY DEVICE ACTIVATION!", "ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4", TRUE)
-		next_announce += DOOMSDAY_ANNOUNCE_INTERVAL
+	else
+		var/key = num2text(sec_left)
+		if(!(sec_left % 60) && !(key in milestones))
+			milestones[key] = TRUE
+			minor_announce("[key] SECONDS UNTIL DOOMSDAY DEVICE ACTIVATION!", "ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4", TRUE)
 
 /obj/machinery/doomsday_device/proc/detonate(z_level = ZLEVEL_STATION_PRIMARY)
 	sound_to_playing_players('sound/machines/alarm.ogg')
@@ -827,4 +828,3 @@ GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
 		AI.eyeobj.relay_speech = TRUE
 
 #undef DEFAULT_DOOMSDAY_TIMER
-#undef DOOMSDAY_ANNOUNCE_INTERVAL

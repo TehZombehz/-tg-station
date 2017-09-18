@@ -22,7 +22,7 @@
 	if(!QDELETED(C))
 		qdel(circuit)
 		circuit = C
-		C.loc = null
+		C.forceMove(src)
 
 /obj/machinery/computer/Destroy()
 	QDEL_NULL(circuit)

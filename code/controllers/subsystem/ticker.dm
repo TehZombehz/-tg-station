@@ -134,8 +134,7 @@ SUBSYSTEM_DEF(ticker)
 
 			if(!mode.explosion_in_progress && mode.check_finished(force_ending) || force_ending)
 				current_state = GAME_STATE_FINISHED
-				toggle_ooc(TRUE) // Turn it on
-				toggle_dooc(TRUE)
+				toggle_ooc(1) // Turn it on
 				declare_completion(force_ending)
 				Master.SetRunLevel(RUNLEVEL_POSTGAME)
 
@@ -162,8 +161,6 @@ SUBSYSTEM_DEF(ticker)
 				to_chat(world, "<B>Unable to choose playable game mode.</B> Reverting to pre-game lobby.")
 				return 0
 			mode = pickweight(runnable_modes)
-			if(!mode)	//too few roundtypes all run too recently
-				mode = pick(runnable_modes)
 
 	else
 		mode = config.pick_mode(GLOB.master_mode)
@@ -203,7 +200,7 @@ SUBSYSTEM_DEF(ticker)
 		mode.announce()
 
 	if(!config.ooc_during_round)
-		toggle_ooc(FALSE) // Turn it off
+		toggle_ooc(0) // Turn it off
 
 	CHECK_TICK
 	GLOB.start_landmarks_list = shuffle(GLOB.start_landmarks_list) //Shuffle the order of spawn points so they dont always predictably spawn bottom-up and right-to-left
@@ -239,10 +236,10 @@ SUBSYSTEM_DEF(ticker)
 
 	PostSetup()
 
-	return TRUE
+	return 1
 
 /datum/controller/subsystem/ticker/proc/PostSetup()
-	set waitfor = FALSE
+	set waitfor = 0
 	mode.post_setup()
 	GLOB.start_state = new /datum/station_state()
 	GLOB.start_state.count(1)
